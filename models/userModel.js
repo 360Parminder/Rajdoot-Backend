@@ -45,6 +45,31 @@ const userSchema = new mongoose.Schema({
     default: true,
     select: false,
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  plan: {
+    status: {
+      type: String,
+      enum: ["active", "inactive"],
+      default: "active",
+    },
+    type: {
+      type: String,
+      enum: ["basic", "premium", "enterprise"],
+      default: "basic",
+    },
+  },
+  
+  monthlyMessageLimit: {
+    type: Number,
+    default: 1000,
+  },
+  messageCount: {
+    type: Number,
+    default: 0,
+  },
 });
 
 // encrypt the password using 'bcryptjs'
