@@ -32,6 +32,14 @@ const messageSchema = new mongoose.Schema({
         default: Date.now
     }
 });
+messageSchema.methods.toJSON = function () {
+    const message = this;
+    const messageObject = message.toObject();
+
+    delete messageObject.__v;
+
+    return messageObject;
+};
 
 const Message = mongoose.model('Message', messageSchema);
 

@@ -79,37 +79,42 @@ exports.sendMessage = async (req, res) => {
         const KANNEL_USERNAME = process.env.KANNEL_USERNAME; // Replace with your Kannel username
         const KANNEL_PASSWORD = process.env.KANNEL_PASSWORD; // Replace with your Kannel password
 
-        const response = await axios.get(KANNEL_URL, {
-            params: {
-                username: KANNEL_USERNAME,
-                password: KANNEL_PASSWORD,
-                to: recipient,
-                text: content,
-            },
-        });
-
-        console.log(response);
-        if (response.data.includes('Accepted for delivery')) {
-            
-            const message = new Message({
-                userId: req.userId,
-                fromNumber: process.env.FROM_NUMBER,
-                toNumber: recipient,
-                apiId: req.headers['x-api-id'],
-                status: 'sent',
-                content,
-            });
-            
-            await message.save();
-            
-            res.status(200).json({
-                success: true,
-                message: 'Message sent successfully',
-                data: message
-            });
-        } else {
-            res.status(500).json({ error: 'Failed to send SMS', details: response.data });
-        }
+      try {
+          
+          const response = await axios.get(KANNEL_URL, {
+              params: {
+                  username: KANNEL_USERNAME,
+                  password: KANNEL_PASSWORD,
+                  to: recipient,
+                  text: content,
+              },
+          });
+  
+        //   console.log(response);
+          if (response.data.includes('Accepted for delivery')) {
+              
+              const message = new Message({
+                  userId: req.userId,
+                  fromNumber: process.env.FROM_NUMBER,
+                  toNumber: recipient,
+                  apiId: req.headers['x-api-id'],
+                  status: 'sent',
+                  content,
+              });
+              
+              await message.save();
+                res.status(200).json({
+                    success: true,
+                    message: 'Message sent successfully',
+                    data: message
+                });
+            } else {
+                res.status(500).json({ error: 'Error sending message' });
+            }
+      } catch (error) {
+        // console.log(error);
+        res.status(500).json({ error: 'Error sending message' });
+    }
     } catch (error) {
         res.status(500).json({ error: 'Error sending message' });
     }

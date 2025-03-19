@@ -59,7 +59,11 @@ exports.createOne = Model => async (req, res, next) => {
 
 exports.getOne = Model => async (req, res, next) => {
     try {
+        console.log(Model);
+        
         const doc = await Model.findById(req.params.id);
+
+        // const apis = await 
 
         if (!doc) {
             return next(new AppError(404, 'fail', 'No document found with that id'), req, res, next);
@@ -68,7 +72,8 @@ exports.getOne = Model => async (req, res, next) => {
         res.status(200).json({
             status: 'success',
             data: {
-                doc
+                user:doc,
+                
             }
         });
     } catch (error) {
