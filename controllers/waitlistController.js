@@ -106,7 +106,7 @@ const sendWaitlistConfirmationEmail = async (email) => {
         html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
                 <div style="text-align: center; margin-bottom: 20px;">
-                    <img src="https://example.com/logo.png" alt="Logo" style="max-width: 150px;">
+                    <img src="https://res.cloudinary.com/dvo4tvvgb/image/upload/v1742487122/samples/logo/lmx9xvmsfffxr366k784.png" alt="Logo" style="max-width: 150px;">
                 </div>
                 <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px;">
                     <h1 style="color: #333; text-align: center;">Welcome to Our Waitlist!</h1>
@@ -121,14 +121,17 @@ const sendWaitlistConfirmationEmail = async (email) => {
                         In the meantime, follow us on social media for updates:
                     </p>
                     <div style="text-align: center; margin-top: 15px;">
-                        <a href="https://twitter.com/example" style="margin: 0 10px; text-decoration: none;">
-                            <img src="https://example.com/twitter-icon.png" alt="Twitter" style="width: 30px; height: 30px;">
+                        <a href="https://www.linkedin.com/in/parminder-singh-storm/" style="margin: 0 10px; text-decoration: none;">
+                            <img src="https://res.cloudinary.com/dvo4tvvgb/image/upload/v1742487121/samples/logo/k0bg0tgz3khcvg0vnvhb.png" alt="Linkedin" style="width: 30px; height: 30px;">
                         </a>
-                        <a href="https://instagram.com/example" style="margin: 0 10px; text-decoration: none;">
-                            <img src="https://example.com/instagram-icon.png" alt="Instagram" style="width: 30px; height: 30px;">
+                        <a href="https://www.instagram.com/360_parminder/" style="margin: 0 10px; text-decoration: none;">
+                            <img src="https://res.cloudinary.com/dvo4tvvgb/image/upload/v1742487122/samples/logo/l0cszr2ze0x6zyv6tlnl.png" alt="Instagram" style="width: 30px; height: 30px;">
                         </a>
-                        <a href="https://facebook.com/example" style="margin: 0 10px; text-decoration: none;">
-                            <img src="https://example.com/facebook-icon.png" alt="Facebook" style="width: 30px; height: 30px;">
+                        <a href="https://github.com/360Parminder" style="margin: 0 10px; text-decoration: none;">
+                            <img src="https://res.cloudinary.com/dvo4tvvgb/image/upload/v1742487121/samples/logo/bx03fuuuxkogotmztnrz.png" alt="Github" style="width: 30px; height: 30px;">
+                        </a>
+                        <a href="https://x.com/360parminder" style="margin: 0 10px; text-decoration: none;">
+                            <img src="https://res.cloudinary.com/dvo4tvvgb/image/upload/v1742487314/samples/logo/lhfloyhiaivvrcbhvczj.png" alt="X" style="width: 30px; height: 30px;">
                         </a>
                     </div>
                 </div>
@@ -151,7 +154,7 @@ const sendApprovalEmail = async (email) => {
         html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
                 <div style="text-align: center; margin-bottom: 20px;">
-                    <img src="https://example.com/logo.png" alt="Logo" style="max-width: 150px;">
+                    <img src="https://res.cloudinary.com/dvo4tvvgb/image/upload/v1742487122/samples/logo/lmx9xvmsfffxr366k784.png" alt="Logo" style="max-width: 150px;">
                 </div>
                 <div style="background-color: #f0f7ff; padding: 20px; border-radius: 8px; border-left: 4px solid #3498db;">
                     <h1 style="color: #2c3e50; text-align: center;">Good News, ${email}!</h1>
@@ -162,7 +165,7 @@ const sendApprovalEmail = async (email) => {
                         You now have full access to our platform. Click the button below to get started.
                     </p>
                     <div style="text-align: center; margin: 30px 0;">
-                        <a href="https://example.com/login" style="background-color: #3498db; color: white; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: bold;">
+                        <a href="https://rajdoot.parminder.info" style="background-color: #3498db; color: white; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: bold;">
                             Get Started Now
                         </a>
                     </div>

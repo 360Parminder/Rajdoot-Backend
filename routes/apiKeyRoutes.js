@@ -15,4 +15,7 @@ router.put('/api-keys/:key', apiKeyController.updateApiKey);
 // Delete API key
 router.delete('/api-keys/:key', apiKeyController.deleteApiKey);
 
+// Get all API keys
+router.get('/view-api-keys', apiKeyController.getAllApiKeys);
+
 module.exports = router;

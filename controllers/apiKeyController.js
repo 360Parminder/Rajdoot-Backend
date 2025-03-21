@@ -107,3 +107,22 @@ exports.getApiKeys = async (req, res) => {
         });
     }
 };
+
+// Get all API keys
+
+exports.getAllApiKeys = async (req, res) => {
+    const userId = req.user.id;
+    try {
+        const apiKeys = await ApiKey.find({userId}).select('-key');
+
+        res.status(200).json({
+            success: true,
+            data: apiKeys
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: 'Error fetching API keys'
+        });
+    }
+}

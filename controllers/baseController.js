@@ -58,10 +58,10 @@ exports.createOne = Model => async (req, res, next) => {
 };
 
 exports.getOne = Model => async (req, res, next) => {
-    try {
-        console.log(Model);
+    try {     
         
-        const doc = await Model.findById(req.params.id);
+        const userId = req.user.id;
+        const doc = await Model.findById(userId);
 
         // const apis = await 
 

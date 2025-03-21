@@ -10,7 +10,7 @@ const waitListSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['pending', 'contacted', 'completed'],
+        enum: ['pending', 'approved', 'rejected'],
         default: 'pending'
     },
     createdAt: {
