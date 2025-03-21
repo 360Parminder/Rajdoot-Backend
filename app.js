@@ -19,7 +19,9 @@ const app = express();
 app.use(cors(
     {
         origin: ['http://localhost:3000', 'https://rajdoot.parminder.info'],
-        credentials: true
+        credentials: true,
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        methods: ['GET', 'POST', 'PUT', 'DELETE']
     }
 ));
 
