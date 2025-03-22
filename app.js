@@ -18,7 +18,7 @@ const app = express();
 // Allow Cross-Origin requests
 app.use(cors(
     {
-        origin: ['http://localhost:3000', 'https://rajdoot.parminder.info'],
+        origin: ['http://localhost:5173', 'https://rajdoot.parminder.info'],
         credentials: true,
         allowedHeaders: ['Content-Type', 'Authorization'],
         methods: ['GET', 'POST', 'PUT', 'DELETE']
