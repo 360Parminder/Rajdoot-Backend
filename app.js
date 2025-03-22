@@ -15,15 +15,16 @@ const globalErrHandler = require('./controllers/errorController');
 const AppError = require('./utils/appError');
 const app = express();
 
-// Allow Cross-Origin requests
-app.use(cors(
-    {
-        origin: ['http://localhost:5173', 'https://rajdoot.parminder.info'],
-        credentials: true,
-        allowedHeaders: ['Content-Type', 'Authorization'],
-        methods: ['GET', 'POST', 'PUT', 'DELETE']
-    }
-));
+// CORS configuration
+app.use(cors({
+    origin: ['http://localhost:5173', 'https://rajdoot.parminder.info'],
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+}));
+
+// Handle preflight requests
+app.options('*', cors());
 
 // Set security HTTP headers
 app.use(helmet());
