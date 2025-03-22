@@ -15,16 +15,31 @@ const globalErrHandler = require('./controllers/errorController');
 const AppError = require('./utils/appError');
 const app = express();
 
-// CORS configuration
-app.use(cors({
-    origin: ['http://localhost:5173', 'https://rajdoot.parminder.info'],
+const allowedOrigins = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://rajdoot.parminder.info",
+  ];
+  
+  const corsOptions = {
+    origin: function (origin, callback) {
+      console.log('Requested Origin:', origin);
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE']
-}));
-
-// Handle preflight requests
-app.options('*', cors());
+    allowedHeaders: ['Content-Type', 'Authorization']
+  };
+  
+  // Enable CORS
+  app.use(cors(corsOptions));
+  
+  // CORS preflight
+  app.options('*', cors(corsOptions))
 
 // Set security HTTP headers
 app.use(helmet());
