@@ -2,6 +2,14 @@
 const mongoose = require('mongoose');
 
 const apiSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: [true, 'Please fill your name']
+    },
+    description: {
+        type: String,
+        required: [true, 'Please fill your description']
+    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

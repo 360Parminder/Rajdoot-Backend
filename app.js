@@ -8,7 +8,7 @@ const cors = require('cors');
 
 
 const userRoutes = require('./routes/userRoutes');
-const apiKey = require('./routes/apikeyRoutes');
+const apiKey = require('./routes/apiKeyRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const waitlistRoutes = require('./routes/waitListRoutes');
 const globalErrHandler = require('./controllers/errorController');
@@ -16,8 +16,6 @@ const AppError = require('./utils/appError');
 const app = express();
 
 const allowedOrigins = [
-    "http://localhost:5173",
-    "http://localhost:3000",
     "https://rajdoot.parminder.info",
   ];
   
@@ -65,9 +63,10 @@ app.use(xss());
 
 // Prevent parameter pollution
 app.use(hpp());
-
+// Server Status Route
 
 // Routes
+app.use('/api/v1', require('./routes/statusRoutes'));
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/api-keys', apiKey);
 app.use('/api/v1/messages', messageRoutes);

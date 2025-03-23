@@ -3,6 +3,7 @@ const ApiKey = require('../models/apikeyModel'); // Assuming you have an ApiKey 
 
 // Generate new API key
 exports.generateApiKey = async (req, res) => {
+    const { name, description } = req.body;
     try {
         const apiKey = crypto.randomBytes(32).toString('hex');
         const userId = req.user.id; // Assuming you have user authentication
@@ -14,6 +15,8 @@ exports.generateApiKey = async (req, res) => {
             userId: userId,
             isActive: true,
             role: 'user',
+            name: name,
+            description: description
         });
 
         await newApiKey.save();
@@ -21,6 +24,8 @@ exports.generateApiKey = async (req, res) => {
         res.status(201).json({
             success: true,
             data: {
+                name: name,
+                description: description,
                 keyId: keyId,
                 apiKey: apiKey,
             }

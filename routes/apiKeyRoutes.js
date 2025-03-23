@@ -7,7 +7,7 @@ const authController = require('../controllers/authController');
 router.use(authController.protect);
 
 // Create new API key
-router.post('/api-keys', apiKeyController.generateApiKey);
+router.post('/create-api-key', apiKeyController.generateApiKey);
 
 // Update API key
 router.put('/api-keys/:key', apiKeyController.updateApiKey);
