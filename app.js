@@ -17,6 +17,7 @@ const app = express();
 
 const allowedOrigins = [
     "https://rajdoot.parminder.info",
+    "http://localhost:5173",
   ];
   
   const corsOptions = {
