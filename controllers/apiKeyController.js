@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const ApiKey = require('../models/apikeyModel'); // Assuming you have an ApiKey model
+const ApiKey = require('../models/apiKeyModel'); // Assuming you have an ApiKey model
 
 // Generate new API key
 exports.generateApiKey = async (req, res) => {
