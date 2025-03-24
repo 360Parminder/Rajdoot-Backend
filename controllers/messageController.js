@@ -1,4 +1,4 @@
-const ApiKey = require('../models/apikeyModel'); // Assume you have API key model
+const ApiKey = require('../models/apiKeyModel'); // Assume you have API key model
 const User = require('../models/userModel'); // Assume you have User model
 const Message = require('../models/messageModel'); // Assume you have Message model
 const { default: axios } = require('axios');
