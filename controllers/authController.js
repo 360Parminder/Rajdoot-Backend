@@ -57,8 +57,6 @@ exports.login = async (req, res, next) => {
       },
     });
   } catch (err) {
-    console.log(err);
-    
     next(err);
   }
 };
@@ -131,6 +129,18 @@ exports.protect = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+exports.logout = (req, res, next) => {
+  res.cookie("jwt", "loggedout", {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+
+  res.status(200).json({
+    status: "success",
+    data: null,
+    message: "Logged out successfully",
+  });
 };
 
 // Authorization check if the user have rights to do this action
