@@ -18,6 +18,7 @@ const app = express();
 const allowedOrigins = [
     "https://rajdoot.parminder.info",
     "http://localhost:5173",
+    "https://rajdoot-testing.vercel.app",
   ];
   
   const corsOptions = {
