@@ -55,11 +55,14 @@ const userSchema = new mongoose.Schema({
       enum: ["active", "inactive"],
       default: "active",
     },
-    type: {
-      type: String,
-      enum: ["basic", "premium", "enterprise"],
-      default: "basic",
-    },
+    plans: [
+      {
+        planId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Plan",
+        },
+      },
+    ]
   },
   
   monthlyMessageLimit: {
