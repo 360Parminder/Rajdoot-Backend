@@ -7,9 +7,12 @@ const router = express.Router();
 
 // Routes for payments
 router.route('/')
-    .post(protect,  paymentController.addPayment)
+    .post(protect,  paymentController.createPaymentIntent)
     .get(protect, /* paymentController.getAllPayments */);
 
+// Route to confirm payment
+router.route('/verify')
+    .post(protect, paymentController.verifyPayment);
 // You can add more payment-related routes here as needed
 // For example:
 router.route('/payment-history')

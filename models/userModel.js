@@ -61,13 +61,22 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Plan",
         },
+        startDate: {
+          type: Date,
+          default: Date.now,
+        },
+        expiryDate: {
+          type: Date,
+          default: Date.now,
+        },
+
       },
     ]
   },
   
   monthlyMessageLimit: {
     type: Number,
-    default: 1000,
+    default: 0,
   },
   messageCount: {
     type: Number,

@@ -17,7 +17,8 @@ const paymentSchema = new mongoose.Schema({
     },
     mode: {
         type: String,
-        enum: ['credit_card', 'debit_card', 'upi', 'net_banking', 'wallet'],
+        enum: ['credit_card', 'debit_card', 'upi', 'net_banking', 'wallet',"pending"],
+        default:'pending',
         required: true
     },
     status: {
@@ -30,9 +31,10 @@ const paymentSchema = new mongoose.Schema({
     },
     orderId: {
         type: String,
-        unique: true
+        unique: true,
+        default:''
     },
-    receipt: {
+    receiptId: {
         type: String
     }
 }, { timestamps: true }); // This adds createdAt and updatedAt fields automatically

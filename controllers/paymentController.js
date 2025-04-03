@@ -1,72 +1,136 @@
+const { default: axios } = require("axios");
 const Payment = require("../models/paymentModel");
 const AppError = require("../utils/appError");
+const { generateReceiptId } = require("../utils/generateReceiptId");
 
 
 // Create a payment intent
-// exports.createPaymentIntent = catchAsync(async (req, res, next) => {
-//     const { amount, currency = 'usd', orderId } = req.body;
+exports.createPaymentIntent =async (req, res, next) => {
+    const { amount, currency = 'INR',planId } = req.body;
+    const userId = req.user._id;
+    const receiptId= generateReceiptId();
+    if (!amount || !currency) {
+        return next(new AppError('Please provide amount and currency', 400));
+    }
 
-//     if (!amount || !orderId) {
-//         return next(new AppError('Please provide amount and order ID', 400));
-//     }
+    // Validate amount
+    if (isNaN(amount) || amount <= 0) {
+        return next(new AppError('Invalid amount', 400));
+    }
 
-//     // Fetch order to verify
-//     const order = await Order.findById(orderId);
-//     if (!order) {
-//         return next(new AppError('Order not found', 404));
-//     }
+    const response = await axios.post('https://api.razorpay.com/v1/orders', {
+        amount: amount * 100, // Convert to paise
+        currency: currency,
+        receipt: receiptId,
+      }, {
+        auth: {
+          username: process.env.RAZORPAY_KEY_ID,
+          password: process.env.RAZORPAY_KEY_SECRET,
+        }
+      });
+      if (!response.data) {
+        return next(new AppError('Failed to create payment intent', 500));
+      }
+      
+   const payment= await Payment.create({
 
-//     // Create payment intent
-//     const paymentIntent = await stripe.paymentIntents.create({
-//         amount: Math.round(amount * 100), // Convert to cents
-//         currency,
-//         metadata: { orderId }
-//     });
+        userId,
+        planId,
+        amount,
+        status: 'pending',
+        receiptId: receiptId,
+        orderId: response.data.id
 
-//     res.status(200).json({
-//         status: 'success',
-//         clientSecret: paymentIntent.client_secret,
-//         paymentIntentId: paymentIntent.id
-//     });
-// });
+   })
+    if (!payment) {
+        return next(new AppError('Failed to create payment', 500));
+    }
+    res.status(201).json({
+        status: 'success',
+        data: {
+            orderId: response.data.id,
+            amount: amount,
+            currency: currency,
+            receiptId: receiptId
+        }
+    });
+};
 
 // Confirm payment
-exports.addPayment = async (req, res, next) => {
-    const { 
-        orderId, 
-        userId,
-        planId,
-        amount,
-        mode,
-        status,
-        transactionId,
-        receipt
-    } = req.body;
+// exports.addPayment = async (req, res, next) => {
+//     const { 
+//         orderId, 
+//         userId,
+//         planId,
+//         amount,
+//         mode,
+//         status,
+//         transactionId,
+//         receipt
+//     } = req.body;
 
-    if (!receipt || !orderId) {
-        return next(new AppError('Receipt ID and order ID are required', 400));
+//     if (!receipt || !orderId) {
+//         return next(new AppError('Receipt ID and order ID are required', 400));
+//     }
+
+//     // payment logic
+//     const payment = await Payment.create({
+//         userId,
+//         planId,
+//         amount,
+//         mode,
+//         status,
+//         transactionId,
+//         orderId,
+//         receipt
+//     }
+//     );
+//     res.status(201).json({
+//         status: 'success',
+//         data: {
+//             payment
+//         }
+//     });
+   
+// };
+// Verify payment
+
+exports.verifyPayment = async (req, res, next) => {
+    const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
+
+    if (!razorpay_payment_id || !razorpay_order_id || !razorpay_signature) {
+        return next(new AppError('Payment verification failed', 400));
     }
 
-    // payment logic
-    const payment = await Payment.create({
-        userId,
-        planId,
-        amount,
-        mode,
-        status,
-        transactionId,
-        orderId,
-        receipt
+    // Verify payment with Razorpay
+    const crypto = require('crypto');
+    const generatedSignature = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET)
+        .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+        .digest('hex');
+
+    if (generatedSignature !== razorpay_signature) {
+        return next(new AppError('Payment verification failed', 400));
     }
+    
+    // Update payment status in the database
+    const payment = await Payment.findOneAndUpdate(
+        { orderId: razorpay_order_id },
+        { status: 'completed', transactionId: razorpay_payment_id },
+        { new: true }
     );
-    res.status(201).json({
+
+    if (!payment) {
+        return next(new AppError('Payment not found', 404));
+    }
+
+    res.status(200).json({
         status: 'success',
         data: {
             payment
         }
     });
-   
-};
+}
+
 
 // Get payment history for a user
 exports.getPaymentById = async (req, res, next) => {
