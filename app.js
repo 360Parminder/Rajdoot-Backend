@@ -12,6 +12,7 @@ const apiKey = require('./routes/apiKeyRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const waitlistRoutes = require('./routes/waitListRoutes');
 const planRoutes = require('./routes/plansRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 const globalErrHandler = require('./controllers/errorController');
 const AppError = require('./utils/appError');
 const app = express();
@@ -75,6 +76,7 @@ app.use('/api/v1/api-keys', apiKey);
 app.use('/api/v1/messages', messageRoutes);
 app.use('/api/v1/waitlist', waitlistRoutes);
 app.use('/api/v1/plans', planRoutes );
+app.use('/api/v1/payments', paymentRoutes);
 
 // handle undefined Routes
 app.use('*', (req, res, next) => {

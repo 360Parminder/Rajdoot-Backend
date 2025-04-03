@@ -63,6 +63,66 @@ exports.login = async (req, res, next) => {
 
 exports.signup = async (req, res, next) => {
   try {
+    // 1) check if email and password exist 
+    if (!req.body.email || !req.body.password) {
+      return next(
+        new AppError(404, "fail", "Please provide email or password"),
+        req,
+        res,
+        next,
+      );
+    }
+    // 2) check if user exist
+    const userExist = await User.findOne({
+      email: req.body.email,
+    });
+    if (userExist) {
+      return next(
+        new AppError(409, "fail", "This email is already exist"),
+        req,
+        res,
+        next,
+      );
+    }
+    // 3) check if password and passwordConfirm are same
+    if (req.body.password !== req.body.passwordConfirm) {
+      return next(
+        new AppError(400, "fail", "Password and PasswordConfirm are not same"),
+        req,
+        res,
+        next,
+      );
+    }
+    // 4) check if role is exist
+    const roles = ["admin", "developer","tester","user"];
+    if (!req.body.role || !roles.includes(req.body.role)) {
+      return next(
+        new AppError(400, "fail", "Role is not valid"),
+        req,
+        res,
+        next,
+      );
+    }
+    // 5) check if the mail contains developer,tester,test,admin,user,password
+    const regex = /(developer|tester|test|admin|user|password)/;
+    if (regex.test(req.body.email)) {
+      return next(
+        new AppError(400, "fail", "Email contains reserved words"),
+        req,
+        res,
+        next,
+      );
+    }
+    // 6) check if the password contains developer,tester,test,admin,user,password
+    const regexPassword = /(developer|tester|test|admin|user|password)/;
+    if (regexPassword.test(req.body.password)) {
+      return next(
+        new AppError(400, "fail", "Password contains reserved words"),
+        req,
+        res,
+        next,
+      );
+    }
     const user = await User.create({
       name: req.body.name,
       email: req.body.email,

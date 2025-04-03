@@ -75,6 +75,13 @@ exports.deleteApiKey = async (req, res) => {
         const userId = req.user.id;
     
         const result = await ApiKey.findOneAndDelete({ keyId:keyId, userId });
+        const newApis = await ApiKey.find({ userId }).select('-key');
+        if (newApis.length === 0) {
+            return res.status(200).json({
+                success: true,
+                message: 'No API keys found'
+            });
+        }
        
         if (!result) {
             return res.status(404).json({
@@ -85,6 +92,7 @@ exports.deleteApiKey = async (req, res) => {
 
         res.status(200).json({
             success: true,
+             newApis,
             message: 'API key deleted successfully'
         });
     } catch (error) {
