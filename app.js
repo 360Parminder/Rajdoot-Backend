@@ -13,6 +13,7 @@ const messageRoutes = require('./routes/messageRoutes');
 const waitlistRoutes = require('./routes/waitListRoutes');
 const planRoutes = require('./routes/plansRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
+const subscriptionRoutes = require('./routes/subscriptionRoutes');
 const globalErrHandler = require('./controllers/errorController');
 const AppError = require('./utils/appError');
 const app = express();
@@ -77,6 +78,7 @@ app.use('/api/v1/messages', messageRoutes);
 app.use('/api/v1/waitlist', waitlistRoutes);
 app.use('/api/v1/plans', planRoutes );
 app.use('/api/v1/payments', paymentRoutes);
+app.use('/api/v1/subscriptions', subscriptionRoutes);
 
 // handle undefined Routes
 app.use('*', (req, res, next) => {

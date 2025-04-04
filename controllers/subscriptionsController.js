@@ -1,69 +1,82 @@
 const User = require("../models/userModel");
 const AppError = require("../utils/appError");
 
-exports.updateSubscriptionPlan = asyncHandler(async (req, res, next) => {
-    // Get current active subscription if exists
-    const plan = req.body.plan;
-    const currentSubscription = await User.findOne({
-        _id: req.user.id,
-        plan: { $elemMatch: { status: 'active' } }
-    }).populate('plan.plans.planId');
+exports.renewSubscription = async (req, res, next) => {
+    const { plan } = req.body;
+    console.log('Renewing subscription with plan:', plan);
+    
     
     // Check if plan data is provided
-    if (!req.body.plan) {
-        return next(new AppError(400, "success",'Please provide a plan to subscribe to '));
+    if (!plan) {
+        return next(new AppError('Please provide a plan to subscribe to', 400));
     }
+
+    // Get current user with active subscription if exists
+    const user = await User.findOne({
+        _id: req.user.id,
+        'plan.status': 'active'
+    }).populate('plan.plans.planId');
+
+    const now = new Date();
     
     // If user has an active subscription
-    if (currentSubscription) {
-        // Check if subscription is expired
-        const now = new Date();
-        const expiryDate = new Date(currentSubscription.expiryDate);
+    if (user && user.plan.status === 'active') {
+        // Check if any plan is still active (not expired)
+        const activePlan = user.plan.plans.find(p => new Date(p.expiryDate) > now);
         
-        if (expiryDate > now) {
-            // Subscription is still active
-            // Update existing subscription
-            const updatedSubscription = await User.findAndUpdate(
-                currentSubscription._id,
-                {
-                    Plan: req.body.plan._id,
-                    startDate:new Date(),
-                    expiryDate: new Date()+360*24*60*1000, // 30 days from now
-                    status: 'active'
-                },
-                {
-                    new: true,
-                    runValidators: true
+        if (activePlan) {
+            // Update existing plan
+            const updatedPlans = user.plan.plans.map(p => {
+                if (p._id.equals(activePlan._id)) {
+                    return {
+                        ...p.toObject(),
+                        planId: plan._id,
+                        startDate: now,
+                        expiryDate: new Date(now.getTime() + 360 * 24 * 60 * 60 * 1000) // 360 days from now
+                    };
                 }
-            );
-            
+                return p;
+            });
+
+            user.plan.plans = updatedPlans;
+            await user.save();
+
             return res.status(200).json({
-                success: true,
-                data: updatedSubscription,
+                status: 'success',
+                data: user,
                 message: 'Subscription plan updated successfully'
             });
         }
         
-        // If expired, update status and create new subscription
-        await Subscription.findByIdAndUpdate(
-            currentSubscription._id,
-            { status: 'expired' }
-        );
+        // If all plans are expired, update status to inactive
+        user.plan.status = 'inactive';
+        await user.save();
     }
-    
-    // Create new subscription
-    const newSubscription = await Subscription.create({
-        user: req.user.id,
-        plan: req.body.plan,
-        startDate: req.body.startDate || new Date(),
-        expiryDate: req.body.expiryDate,
-        status: 'active',
-        ...req.body
-    });
-    
+
+    // Create new subscription plan
+    const newPlan = {
+        planId: plan._id,
+        startDate: now,
+        expiryDate: new Date(now.getTime() + 360 * 24 * 60 * 60 * 1000) // 360 days from now
+    };
+
+    const updatedUser = await User.findByIdAndUpdate(
+        req.user.id,
+        {
+            $set: {
+                'plan.status': 'active',
+                'plan.plans': [...(user?.plan?.plans || []), newPlan]
+            }
+        },
+        {
+            new: true,
+            runValidators: true
+        }
+    ).populate('plan.plans.planId');
+
     res.status(201).json({
-        success: true,
-        data: newSubscription,
+        status: 'success',
+        data: updatedUser,
         message: 'New subscription plan created successfully'
     });
-});
+};

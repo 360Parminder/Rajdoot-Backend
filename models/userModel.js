@@ -26,14 +26,15 @@ const userSchema = new mongoose.Schema({
   },
   passwordConfirm: {
     type: String,
-    required: [true, "Please fill your password confirm"],
+    required: function() {
+      return this.isNew || this.isModified('password');
+    },
     validate: {
       validator: function(el) {
-        // "this" works only on create and save
-        return el === this.password;
+        return this.isNew || this.isModified('password') ? el === this.password : true;
       },
-      message: "Your password and confirmation password are not the same",
-    },
+      message: "Passwords do not match"
+    }
   },
   role: {
     type: String,
