@@ -41,6 +41,14 @@ const planSchema = new mongoose.Schema({
         default: 'from-gray-500 to-gray-600'
     },
     features: [featureSchema],
+    monthlylimit: {
+        type: Number,
+        default: 0
+    },
+    maxMessages: {
+        type: Number,
+        default: 0
+    },
     recommended: {
         type: Boolean,
         default: false

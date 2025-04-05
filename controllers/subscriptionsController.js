@@ -65,7 +65,8 @@ exports.renewSubscription = async (req, res, next) => {
         {
             $set: {
                 'plan.status': 'active',
-                'plan.plans': [...(user?.plan?.plans || []), newPlan]
+                'plan.plans': [...(user?.plan?.plans || []), newPlan],
+                'monthlyMessageLimit':plan.monthlylimit,
             }
         },
         {
@@ -73,6 +74,8 @@ exports.renewSubscription = async (req, res, next) => {
             runValidators: true
         }
     ).populate('plan.plans.planId');
+    console.log('Updated user:', updatedUser);
+    
 
     res.status(201).json({
         status: 'success',
