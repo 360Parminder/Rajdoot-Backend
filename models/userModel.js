@@ -3,6 +3,10 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 
 const userSchema = new mongoose.Schema({
+  image:{
+    type: String,
+    default: "https://res.cloudinary.com/dvo4tvvgb/image/upload/v1737770516/Profile/image.jpg",
+  },
   name: {
     type: String,
     required: [true, "Please fill your name"],
