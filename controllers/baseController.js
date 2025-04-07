@@ -58,27 +58,27 @@ exports.createOne = Model => async (req, res, next) => {
 };
 
 exports.getOne = Model => async (req, res, next) => {
-    try {     
-        const userId = req.user.id;
-        const doc = await Model.findById(userId);
-
-        // const apis = await 
-
-        if (!doc) {
-            return next(new AppError(404, 'fail', 'No document found with that id'), req, res, next);
+    try {
+      const userId = req.user.id;
+  
+      const doc = await Model.findById(userId)
+        .populate('plan.plans.planId'); // ✅ populate the nested plan details
+  
+      if (!doc) {
+        return next(new AppError(404, 'fail', 'No document found with that id'), req, res, next);
+      }
+  
+      res.status(200).json({
+        status: 'success',
+        data: {
+          user: doc,
         }
-
-        res.status(200).json({
-            status: 'success',
-            data: {
-                user:doc,
-                
-            }
-        });
+      });
     } catch (error) {
-        next(error);
+      next(error);
     }
-};
+  };
+  
 
 exports.getAll = Model => async (req, res, next) => {
     try {
