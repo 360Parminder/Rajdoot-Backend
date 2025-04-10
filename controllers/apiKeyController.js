@@ -1,13 +1,22 @@
 const crypto = require('crypto');
 const ApiKey = require('../models/apiKeyModel'); // Assuming you have an ApiKey model
+const errorController = require('./errorController');
+const User = require('../models/userModel');
+const AppError = require('../utils/appError');
 
 // Generate new API key
-exports.generateApiKey = async (req, res) => {
+exports.generateApiKey = async (req, res,next) => {
     const { name, description } = req.body;
     try {
         const apiKey = crypto.randomBytes(32).toString('hex');
         const userId = req.user.id; // Assuming you have user authentication
         const keyId = crypto.randomBytes(16).toString('hex');
+
+        // check user have active plan
+        if (!req.user.plan || req.user.plan.status !== 'active') {
+            return next(new AppError(403, 'fail', 'No active plan found'), req, res);
+        }
+        
 
         const newApiKey = new ApiKey({
             keyId: keyId,
@@ -31,10 +40,7 @@ exports.generateApiKey = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            error: 'Error generating API key'
-        });
+        next(new AppError(500, 'fail', 'Error generating API key', req, res));
     }
 };
 

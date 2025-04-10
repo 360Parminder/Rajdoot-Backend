@@ -3,12 +3,20 @@ const planController = require('../controllers/planController.js');
 const authController = require('../controllers/authController');
 
 const router = express.Router();
-const auth = authController.protect;
+
+
 // Get all plans
+
 router.get('/', planController.getAllPlans);
 
 // Get a specific plan
 router.get('/:id', planController.getPlanById);
+
+
+router.use(authController.protect);
+
+
+router.use(authController.restrictTo(["admin", "developer"]));
 
 // Create a plan
 router.post('/', auth, planController.createPlan);
