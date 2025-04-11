@@ -78,8 +78,9 @@ exports.sendMessage = async (req, res,next) => {
 
         try {
             client.publish('esp32/uno/commands', command, (err) => {
-                if (err) console.error("Send failed:", err);
-
+                if (err){ console.error("Send failed:", err);
+                    return next(new AppError(500, 'fail', 'Error sending message'), req, res, next);
+                }
                 else {
                     console.log("Command sent:", command);
 
