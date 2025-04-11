@@ -19,12 +19,12 @@ router.use(authController.protect);
 router.use(authController.restrictTo(["admin", "developer"]));
 
 // Create a plan
-router.post('/', auth, planController.createPlan);
+router.post('/', planController.createPlan);
 
 // Update a plan
-router.put('/:id', auth, planController.updatePlan);
+// router.put('/:id', auth, planController.updatePlan);
 
 // Delete a plan
-router.delete('/:id', auth, planController.deletePlan);
+// router.delete('/:id', auth, planController.deletePlan);
 
 module.exports = router;
