@@ -89,8 +89,6 @@ exports.sendMessage = async (req, res,next) => {
       });
 
    const es32response=   await mqtt.publish(topic, payload);
-   console.log(es32response);
-
     if (es32response) {
         return res.status(200).json({
             status: 'success',
