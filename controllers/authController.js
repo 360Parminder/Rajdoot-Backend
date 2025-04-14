@@ -132,16 +132,30 @@ exports.signup = async (req, res, next) => {
     });
 
     const token = createToken(user.id);
-
     user.password = undefined;
+    user.passwordConfirm = undefined;
+    // update the user subcription for the first time for 7 days
+   const updatedUser  = await User.findByIdAndUpdate(user.id,{
+    plan:{
+      status: "active",
+      plans:[
+        {
+          planId: "646f2b0c1a4d3e2f8c5b8e7d",
+          startDate: new Date(),
+          expiryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+        }
+      ]
+    },
+    monthlyMessageLimit: 50,
+  })
 
     res.status(201).json({
       status: "success",
       token,
-      user,
+      user: updatedUser,
     });
   } catch (err) {
-    next(err);
+    return next(AppError(500, "fail", "Internal server error"), req, res, next);
   }
 };
 
