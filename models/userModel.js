@@ -40,6 +40,11 @@ const userSchema = new mongoose.Schema({
       message: "Passwords do not match"
     }
   },
+  passwordChangedAt: {
+    type: Date,
+  },
+  passwordResetToken: String,
+  passwordResetExpires: Date,
   role: {
     type: String,
     enum: ["admin", "developer","tester","user"],
