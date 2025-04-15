@@ -2,6 +2,7 @@ const { promisify } = require("util");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 const AppError = require("../utils/appError");
+const { sendRegistrationEmail } = require("../utils/mailtemplates");
 
 const createToken = id => {
   return jwt.sign(
@@ -134,7 +135,7 @@ exports.signup = async (req, res, next) => {
     const token = createToken(user.id);
     user.password = undefined;
     user.passwordConfirm = undefined;
-    // update the user subcription for the first time for 7 days
+    // 7) update the user subcription for the first time for 7 days
    const updatedUser  = await User.findByIdAndUpdate(user.id,{
     plan:{
       status: "active",
@@ -148,6 +149,17 @@ exports.signup = async (req, res, next) => {
     },
     monthlyMessageLimit: 50,
   })
+    // 8) check if the user is updated
+    if (!updatedUser) {
+      return next(
+        new AppError(404, "fail", "User not found"),
+        req,
+        res,
+        next,
+      );
+    }
+    // 9) send welcome email with nodemailer 
+    await sendRegistrationEmail(user.name, user.email);
 
     res.status(201).json({
       status: "success",
@@ -155,7 +167,9 @@ exports.signup = async (req, res, next) => {
       user: updatedUser,
     });
   } catch (err) {
-    return next(AppError(500, "fail", "Internal server error"), req, res, next);
+    console.log(err);
+    
+    return next(new AppError(500, "fail", "Internal server error"), req, res, next);
   }
 };
 
