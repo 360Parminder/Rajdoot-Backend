@@ -263,8 +263,6 @@ exports.logout = (req, res, next) => {
 };
 
 exports.forgetPassword = async (req, res, next) => {
-  console.log("Forget password called",req);
-  
   try {
     // 1) check if email is there
     const { email } = req.body;
