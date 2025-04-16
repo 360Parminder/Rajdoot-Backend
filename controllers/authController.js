@@ -263,6 +263,8 @@ exports.logout = (req, res, next) => {
 };
 
 exports.forgetPassword = async (req, res, next) => {
+  // console.log("Forget password called",req);
+  
   try {
     // 1) check if email is there
     const { email } = req.body;
@@ -289,10 +291,9 @@ exports.forgetPassword = async (req, res, next) => {
     // 3) send reset password link
     const resetToken = await createPasswordResetToken(user._id);
     await user.save({ validateBeforeSave: false });
-    const resetURL = `${req.origin}://${req.get(
-      "host",
-    )}/reset-password/${resetToken}`;
-
+    const resetURL = `${req.protocol}://${process.env.FRONTEND_DOMAIN}/reset-password/${resetToken}`;
+    console.log(`Reset URL: ${resetURL}`);
+    
     // 4) send email
     await sendForgetPasswordEmail(
       user.name,
