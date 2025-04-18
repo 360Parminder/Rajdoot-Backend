@@ -310,9 +310,28 @@ exports.forgetPassword = async (req, res, next) => {
 };
 
 exports.resetPassword = async (req, res, next) => {
+
   try {
+    let token;
     // 1) Get token from URL params
     const resetToken = req.params.token;
+    if (!resetToken) {
+      // Check for Bearer token in headers
+      if (
+        req.headers.authorization &&
+        req.headers.authorization.startsWith("Bearer")
+      ) {
+        token = req.headers.authorization.split(" ")[1];
+      }
+      if (!token) {
+        return next(
+          new AppError(401, "fail", "No token provided or user is not logged in"),
+          req,
+          res,
+          next
+        );
+      }
+    }
     
     // 2) Hash the token to compare with stored hashed token
     const hashedToken = crypto
@@ -325,6 +344,13 @@ exports.resetPassword = async (req, res, next) => {
       passwordResetToken: hashedToken,
       passwordResetExpires: { $gt: Date.now() }
     });
+    // Check if user exists and token is valid
+    // If using Bearer token, find user by ID
+    if (!user && token) {
+      const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+      user = await User.findById(decoded.id);
+    }
+    
     
     if (!user) {
       return next(
