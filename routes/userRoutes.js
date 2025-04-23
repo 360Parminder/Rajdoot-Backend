@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../controllers/userController');
 const authController = require('./../controllers/authController');
+const passport = require('passport');
 
 
 router.post('/login', authController.login);
@@ -12,6 +13,13 @@ router.patch('/updateUser',userController.updateUser)
 // router.patch('/updateMyPassword', authController.updatePassword);
 // router.patch('/updateMe', userController.updateMe);
 router.get('logout', authController.logout);
+
+// Google OAuth routes
+router.get('/google', authController.oauthGoogle); // Initiate Google OAuth
+router.get('/google/callback', passport.authenticate("google", {
+    failureRedirect: "/login", // Redirect if auth fails
+    session: false, // Disable session (if using JWT)
+  }),authController.oauthGoogleCallback); // Google callback
 
 // Protect all routes after this middleware
 router.use(authController.protect);

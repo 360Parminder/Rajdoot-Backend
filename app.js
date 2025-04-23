@@ -5,6 +5,8 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const cors = require('cors');
+const session = require('express-session');
+const passport = require('passport');
 
 
 const userRoutes = require('./routes/userRoutes');
@@ -69,6 +71,18 @@ app.use(xss());
 // Prevent parameter pollution
 app.use(hpp());
 // Server Status Route
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false }, // Set `secure: true` in production (HTTPS)
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+require("./config/passport"); 
 
 // Routes
 app.use('/api/v1', require('./routes/statusRoutes'));

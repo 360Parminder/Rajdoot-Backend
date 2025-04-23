@@ -4,6 +4,7 @@ const User = require("../models/userModel");
 const AppError = require("../utils/appError");
 const { sendRegistrationEmail, sendForgetPasswordEmail, sendPasswordResetConfirmationEmail } = require("../utils/mailTemplates");
 const crypto = require('crypto');
+const passport = require('passport');
 
 
 // function to create token
@@ -419,4 +420,27 @@ exports.restrictTo = (...roles) => {
     }
     next();
   };
+};
+
+
+
+// Google OAuth
+
+exports.oauthGoogle = passport.authenticate('google', {
+  scope: ['profile', 'email']
+});
+
+exports.oauthGoogleCallback = async (req, res, next) => {
+ 
+  const token = createToken(req.user.id);
+
+  req.user.password = undefined;
+
+  res.redirect(`http://${process.env.FRONTEND_DOMAIN}/`).status(200).json({
+    status: "success",
+    token,
+   data: {
+      user: req.user,
+    },
+  });
 };
