@@ -436,11 +436,5 @@ exports.oauthGoogleCallback = async (req, res, next) => {
 
   req.user.password = undefined;
 
-  res.redirect(`http://${process.env.FRONTEND_DOMAIN}/`).status(200).json({
-    status: "success",
-    token,
-   data: {
-      user: req.user,
-    },
-  });
+  res.redirect(`http://${process.env.FRONTEND_DOMAIN}/`);
 };

@@ -1,6 +1,7 @@
 const express = require('express');
 const messageController = require('../controllers/messageController');
 const authController = require('../controllers/authController');
+const otpController = require('../controllers/otpController')
 
 
 
@@ -15,6 +16,8 @@ router.use(messageController.checkUserPlan);
 
 // Message routes
 router.post('/send', messageController.sendMessage);
+router.post('/sendOtp',otpController.sendOTP);
+router.post('/verifyOtp',otpController.verifyOTP);
 // router.get('/status/:messageId', messageController.getMessageStatus);
 
 module.exports = router;

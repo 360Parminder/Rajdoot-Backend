@@ -18,7 +18,7 @@ router.get('logout', authController.logout);
 router.get('/google', authController.oauthGoogle); // Initiate Google OAuth
 router.get('/google/callback', passport.authenticate("google", {
     failureRedirect: "/login", // Redirect if auth fails
-    session: false, // Disable session (if using JWT)
+    session: true, // Disable session (if using JWT)
   }),authController.oauthGoogleCallback); // Google callback
 
 // Protect all routes after this middleware
