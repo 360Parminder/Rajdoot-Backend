@@ -67,6 +67,7 @@ exports.checkUserPlan = async (req, res, next) => {
 // Controller to send message
 exports.sendMessage = async (req, res,next) => {
     const { message, recipient } = req.body;
+    const serverNumber = process.env.FROM_NUMBER; // Replace with actual server number
     const deviceId = process.env.DEVICE_ID; // Replace with actual device ID
     // Validate message and recipient
     if (!message || !recipient) {
@@ -90,9 +91,18 @@ exports.sendMessage = async (req, res,next) => {
 
    const es32response=   await mqtt.publish(topic, payload);
     if (es32response) {
+        const messageData = await Message.create({
+            user:req.user._id,
+            recipient,
+            serverNumber,
+            apiId: req.headers['x-api-id'],
+            content: message,
+            status:'delivered'
+        })
         return res.status(200).json({
             status: 'success',
-            message: 'Message sent successfully'
+            message: 'Message sent successfully',
+            data: messageData
         });
     } else {
         return next(new AppError(500, 'fail', 'Failed to send message'), req, res, next);

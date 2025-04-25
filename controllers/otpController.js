@@ -2,12 +2,14 @@
 const Otp = require('../models/otpModel');
 const Message = require('../models/messageModel');
 const { generateOTP } = require('../utils/otpUtils.js');
+const mqtt = require('./mqttController');
 
 // Send OTP to user's phone number
 exports.sendOTP = async (req, res) => {
     try {
-        const { toPhoneNumber,otpLength } = req.body;
-        const fromPhoneNumber = process.env.FROM_NUMBER;
+        const { recipient,otpLength } = req.body;
+        const serverNumber = process.env.FROM_NUMBER; // server phone number
+        const deviceId = process.env.DEVICE_ID; // actual device ID
         
         // Generate OTP
         const otp = generateOTP(otpLength || 6);
@@ -18,39 +20,34 @@ exports.sendOTP = async (req, res) => {
         // Create OTP record
         const otpRecord = await Otp.create({
             otp,
-            fromPhoneNumber,
-            toPhoneNumber,
+            fromPhoneNumber: serverNumber,
+            toPhoneNumber: recipient,
+            isVerified:true,
             expiresAt,
             user: req.user._id
         });
 
         // Send OTP via SMS
-        const message = await sendMessage({
-            fromNumber: fromPhoneNumber,
-            toNumber: toPhoneNumber,
-            content: `Your OTP is: ${otp}. It will expire in 5 minutes.`
-        });
+        const topic = `${mqtt.topicPrefix}/${deviceId}/commands`;
+        const payload = JSON.stringify({
+            phone: recipient,
+            message: `Your OTP is: ${otp}`,
+            timestamp: Date.now()
+          });
 
-        // Save message record
-        await Message.create({
-            userId: req.user._id,
-            fromNumber: fromPhoneNumber,
-            toNumber: toPhoneNumber,
-            apiId: message.sid,
-            status: 'sent',
-            content: `OTP: ${otp}`
-        });
+          const es32response=   await mqtt.publish(topic, payload);
 
-        res.status(200).json({
-            status: 'success',
-            message: 'OTP sent successfully'
-        });
+          if (es32response) {
+            return res.status(200).json({
+                status: 'success',
+                message: 'OTP sent successfully',
+                otpRecord
+            });
+        } else {
+            return next(new AppError(500, 'fail', 'Failed to send OTP'), req, res, next);
+        }
     } catch (error) {
-        res.status(500).json({
-            status: 'error',
-            message: 'Failed to send OTP',
-            error: error.message
-        });
+        return next(new AppError(500, 'fail', 'Failed to send OTP'), req, res, next);
     }
 };
 
