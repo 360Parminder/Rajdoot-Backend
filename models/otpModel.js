@@ -6,13 +6,13 @@ const otpSchema = new mongoose.Schema({
         required: true,
     },
     // This field is used for server phone number
-    fromPhoneNumber: {
+    serverNumber: {
         type: String,
         required: true,
     },
     // This field is used for client phone number
     // It is the phone number to which the OTP is sent
-    toPhoneNumber: {
+    recipient: {
         type: String,
         required: true,
     },

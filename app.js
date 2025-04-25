@@ -77,7 +77,10 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false }, // Set `secure: true` in production (HTTPS)
+    cookie: {
+       secure: false,
+       maxAge: 24 * 60 * 60 * 1000, // 1 day 
+      }, // Set `secure: true` in production (HTTPS)
   })
 );
 app.use(passport.initialize());

@@ -16,6 +16,7 @@ router.use(messageController.checkUserPlan);
 
 // Message routes
 router.post('/send', messageController.sendMessage);
+// OTP routes
 router.post('/sendOtp',otpController.sendOTP);
 router.post('/verifyOtp',otpController.verifyOTP);
 // router.get('/status/:messageId', messageController.getMessageStatus);

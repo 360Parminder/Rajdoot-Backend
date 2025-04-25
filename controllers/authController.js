@@ -432,9 +432,14 @@ exports.oauthGoogle = passport.authenticate('google', {
 
 exports.oauthGoogleCallback = async (req, res, next) => {
  
-  const token = createToken(req.user.id);
+  try {
+    const token = createToken(req.user.id);
 
-  req.user.password = undefined;
 
-  res.redirect(`http://${process.env.FRONTEND_DOMAIN}/`);
+  res.redirect(`http://${process.env.FRONTEND_DOMAIN}/auth/callback?token=${token}`);
+    
+  } catch (error) {
+    res.redirect(`http://${process.env.FRONTEND_URL}/login?error=authentication_failed`);
+  }
+  
 };

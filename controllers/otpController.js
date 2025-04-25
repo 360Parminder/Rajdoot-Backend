@@ -7,12 +7,12 @@ const mqtt = require('./mqttController');
 // Send OTP to user's phone number
 exports.sendOTP = async (req, res) => {
     try {
-        const { recipient,otpLength } = req.body;
+        const { recipient,otp_length } = req.body;
         const serverNumber = process.env.FROM_NUMBER; // server phone number
         const deviceId = process.env.DEVICE_ID; // actual device ID
         
         // Generate OTP
-        const otp = generateOTP(otpLength || 6);
+        const otp = generateOTP(otp_length || 6);
         // Calculate expiration time (5 minutes from now)
         const expiresAt = new Date();
         expiresAt.setMinutes(expiresAt.getMinutes() + 5);
@@ -20,9 +20,8 @@ exports.sendOTP = async (req, res) => {
         // Create OTP record
         const otpRecord = await Otp.create({
             otp,
-            fromPhoneNumber: serverNumber,
-            toPhoneNumber: recipient,
-            isVerified:true,
+            serverNumber,
+            recipient,
             expiresAt,
             user: req.user._id
         });
@@ -54,11 +53,11 @@ exports.sendOTP = async (req, res) => {
 // Verify OTP
 exports.verifyOTP = async (req, res) => {
     try {
-        const { otp, toPhoneNumber } = req.body;
+        const { otp, recipient } = req.body;
 
         // Find the most recent OTP for the given phone number
         const otpRecord = await Otp.findOne({
-            toPhoneNumber,
+            recipient,
             isVerified: false
         }).sort({ createdAt: -1 });
 
