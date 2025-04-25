@@ -436,10 +436,10 @@ exports.oauthGoogleCallback = async (req, res, next) => {
     const token = createToken(req.user.id);
 
 
-  res.redirect(`http://${process.env.FRONTEND_DOMAIN}/auth/callback?token=${token}`);
+  res.redirect(`${process.env.FRONTEND_DOMAIN}/auth/callback?token=${token}`);
     
   } catch (error) {
-    res.redirect(`http://${process.env.FRONTEND_URL}/login?error=authentication_failed`);
+    res.redirect(`${process.env.FRONTEND_URL}/login?error=authentication_failed`);
   }
   
 };
