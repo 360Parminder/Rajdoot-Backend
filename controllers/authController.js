@@ -175,7 +175,7 @@ exports.signup = async (req, res, next) => {
       status: "active",
       plans:[
         {
-          planId: "646f2b0c1a4d3e2f8c5b8e7d",
+          planId: "680c1693a129cbdb49d303c5",
           startDate: new Date(),
           expiryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
         }

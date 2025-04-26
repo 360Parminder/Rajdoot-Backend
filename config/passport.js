@@ -27,13 +27,18 @@ passport.use(
             image: profile.photos[0].value,
             password: "GoogleOAuth", // Placeholder password
             passwordConfirm: "GoogleOAuth", // Placeholder password
-            plan:[
-              {
-                planId: "649b2f7c1b3e8a0f1c8b4567", // Example plan ID
+            plan:{
+             status: "active",
+              plans:[
+                {
+                planId: "680c1693a129cbdb49d303c5", // Example plan ID
                 startDate: Date.now(),
-                expiryDate: Date.now() + 30 * 24 * 60 * 60 * 1000, // 30 days from now
-              },
-            ]
+                expiryDate: Date.now() + 7 * 24 * 60 * 60 * 1000, // 7 days from now
+                }
+              ]
+            },
+            monthlyMessageLimit: 50,
+            messageCount: 0,
           });
         }
 
