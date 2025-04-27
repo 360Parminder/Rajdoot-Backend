@@ -37,7 +37,7 @@ const allowedOrigins = [
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE','PATCH'],
     credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization','x-api-id','x-api-key'],
   };
   
   // Enable CORS
