@@ -24,26 +24,26 @@ const createToken = id => {
 const createPasswordResetToken = async (userId) => {
   // 1) Create random token
   const resetToken = crypto.randomBytes(32).toString('hex');
-  
+
   // 2) Hash the token and save to database
   const hashedToken = crypto
     .createHash('sha256')
     .update(resetToken)
     .digest('hex');
-  
+
   // 3) Set expiration (e.g., 10 minutes)
   const tokenExpiration = Date.now() + 10 * 60 * 1000;
-  
+
   // In your User model, you should have these fields:
   // passwordResetToken: String,
   // passwordResetExpires: Date
-  
+
   // Save to user document
- await User.findByIdAndUpdate(userId, {
+  await User.findByIdAndUpdate(userId, {
     passwordResetToken: hashedToken,
     passwordResetExpires: tokenExpiration
   });
-  
+
   return resetToken; // Return the unhashed token for the email
 };
 
@@ -129,7 +129,7 @@ exports.signup = async (req, res, next) => {
       );
     }
     // 4) check if role is exist
-    const roles = ["admin", "developer","tester","user"];
+    const roles = ["admin", "developer", "tester", "user"];
     if (!req.body.role || !roles.includes(req.body.role)) {
       return next(
         new AppError(400, "fail", "Role is not valid"),
@@ -170,19 +170,19 @@ exports.signup = async (req, res, next) => {
     user.password = undefined;
     user.passwordConfirm = undefined;
     // 7) update the user subcription for the first time for 7 days
-   const updatedUser  = await User.findByIdAndUpdate(user.id,{
-    plan:{
-      status: "active",
-      plans:[
-        {
-          planId: "680c1693a129cbdb49d303c5",
-          startDate: new Date(),
-          expiryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
-        }
-      ]
-    },
-    monthlyMessageLimit: 50,
-  })
+    const updatedUser = await User.findByIdAndUpdate(user.id, {
+      plan: {
+        status: "active",
+        plans: [
+          {
+            planId: "680c1693a129cbdb49d303c5",
+            startDate: new Date(),
+            expiryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+          }
+        ]
+      },
+      monthlyMessageLimit: 50,
+    })
     // 8) check if the user is updated
     if (!updatedUser) {
       return next(
@@ -202,7 +202,7 @@ exports.signup = async (req, res, next) => {
     });
   } catch (err) {
     console.log(err);
-    
+
     return next(new AppError(500, "fail", "Internal server error"), req, res, next);
   }
 };
@@ -265,7 +265,7 @@ exports.logout = (req, res, next) => {
 
 exports.forgetPassword = async (req, res, next) => {
   // console.log("Forget password called",req);
-  
+
   try {
     // 1) check if email is there
     const { email } = req.body;
@@ -294,7 +294,7 @@ exports.forgetPassword = async (req, res, next) => {
     await user.save({ validateBeforeSave: false });
     const resetURL = `${req.protocol}://${process.env.FRONTEND_DOMAIN}/reset-password/${resetToken}`;
     console.log(`Reset URL: ${resetURL}`);
-    
+
     // 4) send email
     await sendForgetPasswordEmail(
       user.name,
@@ -333,13 +333,13 @@ exports.resetPassword = async (req, res, next) => {
         );
       }
     }
-    
+
     // 2) Hash the token to compare with stored hashed token
     const hashedToken = crypto
       .createHash('sha256')
       .update(resetToken)
       .digest('hex');
-    
+
     // 3) Find user with matching token and check expiration
     const user = await User.findOne({
       passwordResetToken: hashedToken,
@@ -351,8 +351,8 @@ exports.resetPassword = async (req, res, next) => {
       const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
       user = await User.findById(decoded.id);
     }
-    
-    
+
+
     if (!user) {
       return next(
         new AppError(400, "fail", "Token is invalid or has expired"),
@@ -361,10 +361,10 @@ exports.resetPassword = async (req, res, next) => {
         next
       );
     }
-    
+
     // 4) Update password and clear reset token fields
     const { password, passwordConfirm } = req.body;
-    
+
     if (!password || !passwordConfirm) {
       return next(
         new AppError(400, "fail", "Please provide password and password confirmation"),
@@ -373,7 +373,7 @@ exports.resetPassword = async (req, res, next) => {
         next
       );
     }
-    
+
     if (password !== passwordConfirm) {
       return next(
         new AppError(400, "fail", "Passwords do not match"),
@@ -382,24 +382,24 @@ exports.resetPassword = async (req, res, next) => {
         next
       );
     }
-    
+
     user.password = password;
     user.passwordConfirm = passwordConfirm;
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
     await user.save();
-    
+
     // 5) Optionally: Send confirmation email
     await sendPasswordResetConfirmationEmail(
       user.name,
       user.email,
     );
-    
+
     res.status(200).json({
       status: "success",
       message: "Password updated successfully"
     });
-    
+
   } catch (err) {
     console.log(err);
     next(new AppError(500, "fail", "Internal server error"), req, res, next);
@@ -422,8 +422,6 @@ exports.restrictTo = (...roles) => {
   };
 };
 
-
-
 // Google OAuth
 
 exports.oauthGoogle = passport.authenticate('google', {
@@ -431,15 +429,13 @@ exports.oauthGoogle = passport.authenticate('google', {
 });
 
 exports.oauthGoogleCallback = async (req, res, next) => {
- 
+
   try {
     const token = createToken(req.user.id);
+    res.redirect(`${process.env.FRONTEND_DOMAIN}/auth/callback?token=${token}`);
 
-
-  res.redirect(`${process.env.FRONTEND_DOMAIN}/auth/callback?token=${token}`);
-    
   } catch (error) {
     res.redirect(`${process.env.FRONTEND_URL}/login?error=authentication_failed`);
   }
-  
+
 };
