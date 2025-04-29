@@ -28,4 +28,4 @@ jobs:
     - run: | 
         touch .env
         echo "${{secrets.PRODUCTION}}" > .env
-    - run: pm2 restart index.js
+    - run: pm2 restart server.js
