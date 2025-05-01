@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+const nodemailer = require('nodemailer');
 
 // Configure nodemailer transporter
 const transporter = nodemailer.createTransport({
@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // Function to send registration email
-export const sendRegistrationEmail = async (name, email) => {
+const sendRegistrationEmail = async (name, email) => {
     const mailOptions = {
         from: process.env.EMAIL,
         to: email,
@@ -63,7 +63,7 @@ export const sendRegistrationEmail = async (name, email) => {
 
 // Function to send password reset email
 
-export const sendPasswordResetEmail = async (name, email, token) => {
+const sendPasswordResetEmail = async (name, email, token) => {
     const mailOptions = {
         from: process.env.EMAIL,
         to: email,
@@ -111,7 +111,7 @@ export const sendPasswordResetEmail = async (name, email, token) => {
 
 // function to send forget password email
 
-export const sendForgetPasswordEmail = async (name,email,resetURL) => {
+const sendForgetPasswordEmail = async (name,email,resetURL) => {
     const mailOptions = {
         from: process.env.EMAIL,
         to: email,
@@ -160,7 +160,7 @@ px; line-height: 1.6; color: #555;">
 
 // Function to send Password Change Confirmation Email
 
-export const sendPasswordResetConfirmationEmail = async (name, email) => {
+const sendPasswordResetConfirmationEmail = async (name, email) => {
     const mailOptions = {
         from: process.env.EMAIL,
         to: email,
@@ -194,3 +194,9 @@ export const sendPasswordResetConfirmationEmail = async (name, email) => {
     };
     await transporter.sendMail(mailOptions);
 }
+module.exports = {
+    sendRegistrationEmail,
+    sendPasswordResetEmail,
+    sendForgetPasswordEmail,
+    sendPasswordResetConfirmationEmail
+};
