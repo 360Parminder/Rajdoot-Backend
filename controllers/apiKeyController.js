@@ -1,7 +1,5 @@
 const crypto = require('crypto');
 const ApiKey = require('../models/apiKeyModel'); // Assuming you have an ApiKey model
-const errorController = require('./errorController');
-const User = require('../models/userModel');
 const AppError = require('../utils/appError');
 
 // Generate new API key
