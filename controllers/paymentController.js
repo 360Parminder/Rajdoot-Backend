@@ -1,7 +1,7 @@
 const { default: axios } = require("axios");
 const Payment = require("../models/paymentModel");
 const AppError = require("../utils/appError");
-const { generateReceiptId } = require("../utils/generateReceiptId");
+const  generateReceiptId  = require("../utils/generateReceiptId");
 
 
 // Create a payment intent

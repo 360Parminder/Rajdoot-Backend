@@ -97,6 +97,8 @@ exports.login = async (req, res, next) => {
 };
 
 exports.signup = async (req, res, next) => {
+  console.log("Signup called", req.body);
+  
   try {
     // 1) check if email and password exist 
     if (!req.body.email || !req.body.password) {
