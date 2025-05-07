@@ -32,12 +32,16 @@ exports.renewSubscription = async (req, res, next) => {
                         ...p.toObject(),
                         planId: plan._id,
                         startDate: now,
-                        expiryDate: new Date(now.getTime() + 360 * 24 * 60 * 60 * 1000) // 360 days from now
+                        expiryDate: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000) // 30 days from now
                     };
+
                 }
                 return p;
             });
-
+            // Update user with new plan details
+            user.monthlyMessageLimit = plan.monthlylimit;
+            user.messageCount = 0;
+            user.plan.status = 'active';
             user.plan.plans = updatedPlans;
             await user.save();
 
