@@ -19,9 +19,6 @@ exports.deleteOne = Model => async (req, res, next) => {
 };
 
 exports.updateOne = Model => async (req, res, next) => {
-    console.log(req);
-
-    
     try {
         const doc = await Model.findByIdAndUpdate(req.query.id, req.body, {
             new: true,
