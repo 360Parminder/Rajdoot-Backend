@@ -99,22 +99,7 @@ exports.sendMessage = async (req, res, next) => {
             return next(new AppError(400, 'fail', 'Invalid recipient format'), req, res, next);
         }
 
-        const topic = `${mqtt.topicPrefix}/${deviceId}/commands`;
-        const payload = JSON.stringify({
-            phone: recipient,
-            message: message,
-            timestamp: Date.now()
-        });
-
-        const es32response = await mqtt.publish(topic, payload);
-        
-        if (!es32response) {
-            await session.abortTransaction();
-            session.endSession();
-            return next(new AppError(500, 'fail', 'Failed to send message'), req, res, next);
-        }
-
-        // Execute both database operations in a transaction
+        // First perform database operations within the transaction
         const [messageData, updatedUser] = await Promise.all([
             Message.create([{
                 user: req.user._id,
@@ -122,7 +107,7 @@ exports.sendMessage = async (req, res, next) => {
                 serverNumber,
                 apiId: req.headers['x-api-id'],
                 content: message,
-                status: 'delivered'
+                status: 'pending' // Set initial status as pending
             }], { session }),
             
             User.findByIdAndUpdate(
@@ -132,17 +117,60 @@ exports.sendMessage = async (req, res, next) => {
             )
         ]);
 
+        // If database operations succeeded, commit the transaction
         await session.commitTransaction();
-        session.endSession();
+        
+        try {
+            // Now send the message via MQTT
+            const topic = `${mqtt.topicPrefix}/${deviceId}/commands`;
+            const payload = JSON.stringify({
+                phone: recipient,
+                message: message,
+                timestamp: Date.now()
+            });
 
-        return res.status(200).json({
-            status: 'success',
-            message: 'Message sent successfully',
-            data: {
-                message: messageData[0],
-                user: updatedUser
+            const es32response = await mqtt.publish(topic, payload);
+            
+            if (!es32response) {
+                // If MQTT fails, update the message status to failed
+                await Message.findByIdAndUpdate(
+                    messageData[0]._id,
+                    { status: 'failed' }
+                );
+                
+                session.endSession();
+                return next(new AppError(500, 'fail', 'Failed to send message'), req, res, next);
             }
-        });
+
+            // Update message status to delivered
+            await Message.findByIdAndUpdate(
+                messageData[0]._id,
+                { status: 'delivered' }
+            );
+
+            session.endSession();
+            return res.status(200).json({
+                status: 'success',
+                message: 'Message sent successfully',
+                data: {
+                    message: {
+                        ...messageData[0].toObject(),
+                        status: 'delivered'
+                    },
+                    user: updatedUser
+                }
+            });
+
+        } catch (mqttError) {
+            // If MQTT fails after successful DB commit
+            await Message.findByIdAndUpdate(
+                messageData[0]._id,
+                { status: 'failed' }
+            );
+            
+            session.endSession();
+            return next(new AppError(500, 'fail', 'Message queued but sending failed'), req, res, next);
+        }
 
     } catch (error) {
         await session.abortTransaction();
