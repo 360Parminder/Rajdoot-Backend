@@ -1,4 +1,6 @@
 require('dotenv').config();
+console.log("Loading MQTT configuration...",process.env.HIVEMQ_URL, process.env.HIVEMQ_USERNAME, process.env.HIVEMQ_PASSWORD);
+
 
 module.exports = {
   brokerUrl: process.env.HIVEMQ_URL,
