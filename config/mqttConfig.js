@@ -4,14 +4,17 @@ module.exports = {
   brokerUrl: process.env.HIVEMQ_URL,
   options: {
     port: 8883,
-    username: process.env.HIVEMQ_USERNAME ,
-    password: process.env.HIVEMQ_PASSWORD ,
-    clientId: 'nodejs-server-' + Math.random().toString(16).substr(2, 8),
+    username: process.env.HIVEMQ_USERNAME,
+    password: process.env.HIVEMQ_PASSWORD,
+    clientId: 'nodejs-' + require('crypto').randomBytes(4).toString('hex'),
     clean: true,
+    keepalive: 60,
     reconnectPeriod: 5000,
-    connectTimeout: 10000,
+    connectTimeout: 30000,
     protocol: 'mqtts',
-    rejectUnauthorized: false // TEMPORARY for testing
+    protocolVersion: 4, // MQTT v3.1.1
+    rejectUnauthorized: false, // TEMPORARY for debugging
+    debug: true // Enable MQTT.js internal logging
   },
   topicPrefix: 'home/automation/sms-gateway'
 };
