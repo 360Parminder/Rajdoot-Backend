@@ -4,27 +4,14 @@ const mqttConfig = require('../config/mqttConfig');
 class MqttService {
   constructor() {
     this.client = mqtt.connect(mqttConfig.brokerUrl, mqttConfig.options);
+    this.topicPrefix = mqttConfig.topicPrefix;
     
     this.client.on('connect', () => {
-      console.log('✅ Connected to HiveMQ');
-      console.log('Client ID:', this.client.options.clientId);
+      console.log('✅ Successfully connected to HiveMQ Cloud');
     });
-  
-    this.client.on('reconnect', () => {
-      console.log('🔄 Attempting reconnect...');
-    });
-  
-    this.client.on('close', () => {
-      console.log('🔌 Connection closed');
-    });
-  
-    this.client.on('offline', () => {
-      console.log('📴 Client offline');
-    });
-  
+
     this.client.on('error', (err) => {
-      console.error('❌ Connection error:', err);
-      console.log('Current client options:', this.client.options);
+      console.error('❌ MQTT Connection Error:', err.message);
     });
   }
 
