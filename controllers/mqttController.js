@@ -31,7 +31,6 @@ class MqttService {
           status: 'success',
           message: 'Message published successfully'
         }
-
       });
     });
   }
