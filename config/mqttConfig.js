@@ -1,5 +1,7 @@
 require('dotenv').config();
-
+  const pass= process.env.HIVEMQ_PASSWORD;
+  console.log(pass); // Hide password in logs
+  
 module.exports = {
   brokerUrl: process.env.HIVEMQ_URL,
   options: {
