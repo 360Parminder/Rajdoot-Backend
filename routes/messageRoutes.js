@@ -15,10 +15,10 @@ router.use(messageController.validateApiCredentials);
 router.use(messageController.checkUserPlan);
 
 // Message routes
-router.post('/send', messageController.sendMessage);
+router.post('/send-message', messageController.sendMessage);
 // OTP routes
-router.post('/sendOtp',otpController.sendOTP);
-router.post('/verifyOtp',otpController.verifyOTP);
+router.post('/send-otp',otpController.sendOTP);
+router.post('/verify-otp',otpController.verifyOTP);
 // router.get('/status/:messageId', messageController.getMessageStatus);
 
 module.exports = router;
