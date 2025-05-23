@@ -13,6 +13,7 @@ exports.sendOTP = async (req, res) => {
         
         // Generate OTP
         const otp = generateOTP(otp_length || 6);
+        const message = `Your OTP is: ${otp}`;
         // Calculate expiration time (5 minutes from now)
         const expiresAt = new Date();
         expiresAt.setMinutes(expiresAt.getMinutes() + 5);
