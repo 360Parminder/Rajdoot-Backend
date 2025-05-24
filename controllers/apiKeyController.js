@@ -13,9 +13,7 @@ exports.generateApiKey = async (req, res,next) => {
         // check user have active plan
         if (!req.user.plan || req.user.plan.status !== 'active') {
             return next(new AppError(403, 'fail', 'No active plan found'), req, res);
-        }
-        
-
+        } 
         const newApiKey = new ApiKey({
             keyId: keyId,
             secretKey: apiKey,
