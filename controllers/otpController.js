@@ -24,7 +24,7 @@ exports.sendOTP = async (req, res) => {
             serverNumber,
             recipient,
             expiresAt,
-            user: req.user._id
+            user: req.userId
         });
 
         // Send OTP via SMS
@@ -47,6 +47,7 @@ exports.sendOTP = async (req, res) => {
             return next(new AppError(500, 'fail', 'Failed to send OTP'), req, res, next);
         }
     } catch (error) {
+        console.error('Error sending OTP:', error);
         return next(new AppError(500, 'fail', 'Failed to send OTP'), req, res, next);
     }
 };

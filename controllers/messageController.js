@@ -30,6 +30,8 @@ exports.validateApiCredentials = async (req, res, next) => {
         req.userId = validApi.userId;
         next();
     } catch (error) {
+        console.log('Error validating API credentials:', error);
+        
       return  next(new AppError(500, 'fail', 'Error validating API credentials'), req, res, next);
     }
 };
@@ -62,6 +64,7 @@ exports.checkUserPlan = async (req, res, next) => {
 
         next();
     } catch (error) {
+        console.log('Error checking user plan:', error);
         return next(new AppError(500, 'fail', 'Error checking user plan'), req, res, next);
     }
 };
