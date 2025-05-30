@@ -47,9 +47,6 @@ const createPasswordResetToken = async (userId) => {
   return resetToken; // Return the unhashed token for the email
 };
 
-
-
-
 exports.login = async (req, res, next) => {
   try {
     const { email, password } = req.body;

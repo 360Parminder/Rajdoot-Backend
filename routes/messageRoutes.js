@@ -8,7 +8,7 @@ const otpController = require('../controllers/otpController')
 const router = express.Router();
 
 // Middleware to check if the user is authenticated
-router.use(authController.protect);
+// router.use(authController.protect);
 
 // Apply middlewares to all routes
 router.use(messageController.validateApiCredentials);

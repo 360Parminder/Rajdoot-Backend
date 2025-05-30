@@ -17,7 +17,12 @@ passport.use(
       try {
         // Check if user exists in DB
         let user = await User.findOne({ email: profile.emails[0].value });
-        console.log("User found:", user);
+
+        if(user.image!=profile.photos[0].value){
+          // Update user image if it has changed
+          user.image = profile.photos[0].value;
+          await user.save();
+        }
 
         // If user doesn't exist, create a new one
         if (!user) {
