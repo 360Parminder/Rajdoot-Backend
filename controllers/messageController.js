@@ -71,6 +71,8 @@ exports.checkUserPlan = async (req, res, next) => {
 
 // Controller to send message
 exports.sendMessage = async (req, res, next) => {
+    console.log('Sending message:', req.user);
+    
     const session = await mongoose.startSession();
     session.startTransaction();
     
@@ -176,6 +178,8 @@ exports.sendMessage = async (req, res, next) => {
         }
 
     } catch (error) {
+        console.log('Error sending message:', error);
+        
         await session.abortTransaction();
         session.endSession();
         return next(new AppError(500, 'fail', 'Transaction failed'), req, res, next);
