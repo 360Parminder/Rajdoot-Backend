@@ -39,7 +39,6 @@ const allowedOrigins = [
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization','x-api-id','x-api-key','X-Requested-With'],
   };
-  
   // Enable CORS
   app.use(cors(corsOptions));
   
