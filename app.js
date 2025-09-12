@@ -87,7 +87,9 @@ app.use(passport.session());
 require("./config/passport"); 
 
 // Routes
+// status of the server
 app.use('/api/v1', require('./routes/statusRoutes'));
+// Mounting the routes
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/api-keys', apiKey);
 app.use('/api/v1/messages', messageRoutes);
