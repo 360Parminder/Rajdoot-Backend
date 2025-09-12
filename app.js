@@ -87,7 +87,7 @@ app.use(passport.session());
 require("./config/passport"); 
 
 // Routes
-app.use('/api/v1', require('./routes/statusRoutes'));
+app.use('/api/v1/status', require('./routes/statusRoutes'));
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/api-keys', apiKey);
 app.use('/api/v1/messages', messageRoutes);
