@@ -24,6 +24,7 @@ const allowedOrigins = [
     "https://rajdoot.parminder.info",
     "http://localhost:5173",
     "https://rajdoot-testing.vercel.app",
+    "https://rajdoot.wtf",
   ];
   
   const corsOptions = {
