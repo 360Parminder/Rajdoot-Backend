@@ -9,7 +9,6 @@ exports.generateApiKey = async (req, res,next) => {
         const apiKey = crypto.randomBytes(32).toString('hex');
         const userId = req.user.id; // Assuming you have user authentication
         const keyId = crypto.randomBytes(16).toString('hex');
-
         // check user have active plan
         if (!req.user.plan || req.user.plan.status !== 'active') {
             return next(new AppError(403, 'fail', 'No active plan found'), req, res);
