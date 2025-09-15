@@ -73,7 +73,7 @@ const sendPasswordResetEmail = async (name, email, token) => {
                 <div style="text-align: center; margin-bottom: 20px;">
                     <img src="https://res.cloudinary.com/dvo4tvvgb/image/upload/v1742487122/samples/logo/lmx9xvmsfffxr366k784.png" alt="Rajdoot Logo" style="max-width: 150px;">
                 </div>
-                <div style="background-color: #f0f7ff; padding: 20px; border-radius: 8px; border-left: 4px solid #3498db;">
+                <div style="background-color: #f0f7ff; padding: 20px; border-radius: 8px; border-left: 4px solid #7209b7;">
                     <h1 style="color: #2c3e50; text-align: center;">Password Reset Request</h1>
                     <p style="font-size: 16px; line-height: 1.6; color: #555;">
                         Hi ${name},
@@ -85,7 +85,7 @@ const sendPasswordResetEmail = async (name, email, token) => {
                         To reset your password, please click the link below:
                     </p>
                     <div style="text-align: center; margin: 30px 0;">
-                        <a href="${process.env.FRONTEND_URL}/reset-password/${token}" style="background-color: #3498db; color: white; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 16px;">
+                        <a href="${process.env.FRONTEND_URL}/reset-password/${token}" style="background-color: #7209b7; color: white; padding: 12px 25px; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 16px;">
                             Reset Password
                         </a>
                     </div>
