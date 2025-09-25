@@ -3,6 +3,8 @@ const router = express.Router();
 const userController = require('../controllers/userController');
 const authController = require('./../controllers/authController');
 const passport = require('passport');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' }); // Configure multer to save files to 'uploads/' directory
 
 
 router.post('/login', authController.login);
@@ -24,7 +26,8 @@ router.get('/google/callback', passport.authenticate("google", {
 // Protect all routes after this middleware
 router.use(authController.protect);
 
-router.patch('/updateUser',userController.updateUser)
+
+router.patch('/updateUser',upload.single('image'),userController.updateUser)
 router.delete('/deleteMe', userController.deleteMe);
 
 // Only admin have permission to access for the below APIs 
