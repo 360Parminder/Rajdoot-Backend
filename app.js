@@ -23,6 +23,7 @@ const app = express();
 const allowedOrigins = [
     "https://rajdoot.parminder.info",
     "http://localhost:5173",
+    "http://localhost:5174",
     "https://rajdoot-testing.vercel.app",
     "https://www.rajdoot.wtf",
     "https://rajdoot.wtf",
